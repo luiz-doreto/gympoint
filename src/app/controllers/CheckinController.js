@@ -1,4 +1,4 @@
-import { subDays, startOfDay, endOfDay } from 'date-fns';
+import { subDays } from 'date-fns';
 import { Op } from 'sequelize';
 import Checkin from '../models/Checkin';
 

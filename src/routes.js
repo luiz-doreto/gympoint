@@ -18,6 +18,7 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 routes.post('/students', StudentsController.store);
 routes.put('/students', StudentsController.update);
+routes.get('/students', StudentsController.index);
 
 routes.post('/students/:id/checkins', CheckinController.store);
 routes.get('/students/:id/checkins', CheckinController.index);

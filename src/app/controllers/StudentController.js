@@ -1,7 +1,23 @@
+import { Op } from 'sequelize';
 import Student from '../models/Student';
 import User from '../models/User';
 
 class StudentController {
+    async index(req, res) {
+        const { filter } = req.query;
+        let students = [];
+
+        if (filter) {
+            students = await Student.findAll({
+                where: { name: { [Op.like]: `%${filter}%` } },
+            });
+        } else {
+            students = await Student.findAll();
+        }
+
+        return res.json(students);
+    }
+
     async store(req, res) {
         const { email } = req.body;
 
