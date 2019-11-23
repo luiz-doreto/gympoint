@@ -9,13 +9,21 @@ class StudentController {
 
         if (filter) {
             students = await Student.findAll({
-                where: { name: { [Op.like]: `%${filter}%` } },
+                where: { name: { [Op.like]: `${filter}%` } },
+                attributes: ['id', 'name'],
             });
         } else {
             students = await Student.findAll();
         }
 
         return res.json(students);
+    }
+
+    async show(req, res) {
+        const { id } = req.params;
+        const student = await Student.findOne({ where: { id } });
+
+        return res.json(student);
     }
 
     async store(req, res) {

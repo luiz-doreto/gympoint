@@ -8,9 +8,44 @@ import Queue from '../../lib/Queue';
 
 class RegistrationController {
     async index(req, res) {
-        const registrations = await Registration.findAll();
+        const registrations = await Registration.findAll({
+            include: [
+                {
+                    model: Student,
+                    as: 'student',
+                    attributes: ['name'],
+                },
+                {
+                    model: Plan,
+                    as: 'plan',
+                    attributes: ['title'],
+                },
+            ],
+        });
 
         return res.json(registrations);
+    }
+
+    async show(req, res) {
+        const { id } = req.params;
+
+        const registration = await Registration.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Student,
+                    as: 'student',
+                    attributes: ['id', 'name'],
+                },
+                {
+                    model: Plan,
+                    as: 'plan',
+                    attributes: ['id', 'title', 'duration', 'total_price'],
+                },
+            ],
+        });
+
+        return res.json(registration);
     }
 
     async store(req, res) {
