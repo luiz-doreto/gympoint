@@ -2,10 +2,13 @@ import HelpOrder from '../models/HelpOrder';
 import Student from '../models/Student';
 import Queue from '../../lib/Queue';
 import AnswerHelpOrder from '../jobs/AnswerHelpOrder';
+import paginate from '../../util/paginate';
 
 class HelpOrderController {
     async index(req, res) {
-        const helpOrders = await HelpOrder.findAll({
+        const { page, pageSize } = req.query;
+
+        const helpOrders = await HelpOrder.findAndCountAll({
             where: {
                 answer: null,
             },
@@ -16,6 +19,8 @@ class HelpOrderController {
                     attributes: ['name'],
                 },
             ],
+            order: ['created_at'],
+            ...paginate(page, pageSize),
         });
 
         return res.json(helpOrders);

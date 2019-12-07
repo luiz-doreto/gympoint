@@ -1,19 +1,29 @@
 import { Op } from 'sequelize';
 import Student from '../models/Student';
 import User from '../models/User';
+import paginate from '../../util/paginate';
 
 class StudentController {
     async index(req, res) {
-        const { filter } = req.query;
+        const { filter, page, pageSize } = req.query;
         let students = [];
 
         if (filter) {
-            students = await Student.findAll({
-                where: { name: { [Op.like]: `${filter}%` } },
-                attributes: ['id', 'name'],
+            students = await Student.findAndCountAll({
+                attributes: ['id', 'name', 'email', 'age'],
+                where: {
+                    name: {
+                        [Op.iLike]: `${filter}%`,
+                    },
+                },
+                order: ['name'],
+                ...paginate(page, pageSize),
             });
         } else {
-            students = await Student.findAll();
+            students = await Student.findAndCountAll({
+                order: ['name'],
+                ...paginate(page, pageSize),
+            });
         }
 
         return res.json(students);
@@ -70,6 +80,15 @@ class StudentController {
             weight,
             height,
         });
+    }
+
+    async delete(req, res) {
+        const { id } = req.params;
+
+        const student = await Student.findByPk(id);
+        await student.destroy();
+
+        return res.json();
     }
 }
 

@@ -5,10 +5,13 @@ import Student from '../models/Student';
 import Plan from '../models/Plan';
 import Welcome from '../jobs/Welcome';
 import Queue from '../../lib/Queue';
+import paginate from '../../util/paginate';
 
 class RegistrationController {
     async index(req, res) {
-        const registrations = await Registration.findAll({
+        const { page, pageSize } = req.query;
+
+        const registrations = await Registration.findAndCountAll({
             include: [
                 {
                     model: Student,
@@ -21,6 +24,8 @@ class RegistrationController {
                     attributes: ['title'],
                 },
             ],
+            order: [['student', 'name']],
+            ...paginate(page, pageSize),
         });
 
         return res.json(registrations);

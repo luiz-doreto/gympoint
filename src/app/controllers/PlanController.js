@@ -1,8 +1,14 @@
 import Plan from '../models/Plan';
+import paginate from '../../util/paginate';
 
 class PlanController {
     async index(req, res) {
-        const plans = await Plan.findAll();
+        const { page, pageSize } = req.query;
+
+        const plans = await Plan.findAndCountAll({
+            order: ['title'],
+            ...paginate(page, pageSize),
+        });
 
         return res.json(plans);
     }
