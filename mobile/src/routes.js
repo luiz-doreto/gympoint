@@ -30,6 +30,7 @@ export default isSigned =>
                                     HelpOrderNew,
                                 },
                                 {
+                                    headerLayoutPreset: 'center',
                                     defaultNavigationOptions: {
                                         headerTitle: () => (
                                             <Image source={logo} />

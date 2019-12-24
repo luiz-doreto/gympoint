@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { parseISO, addMonths } from 'date-fns';
 import Registration from '../models/Registration';
 import Student from '../models/Student';
@@ -54,19 +53,13 @@ class RegistrationController {
     }
 
     async store(req, res) {
-        const schema = Yup.object().shape({
-            student_id: Yup.number().required(),
-            plan_id: Yup.number().required(),
-            start_date: Yup.date().required(),
-        });
-
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation fails' });
-        }
-
         const { student_id, plan_id, start_date } = req.body;
 
         const plan = await Plan.findByPk(plan_id);
+
+        if (!plan) {
+            return res.status(400).json({ error: 'Plan not found'});
+        }
 
         const startDate = parseISO(start_date);
         const end_date = addMonths(startDate, plan.duration);
@@ -94,16 +87,6 @@ class RegistrationController {
     }
 
     async update(req, res) {
-        const schema = Yup.object().shape({
-            student_id: Yup.number().required(),
-            plan_id: Yup.number().required(),
-            start_date: Yup.date().required(),
-        });
-
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({ error: 'Validation fails' });
-        }
-
         const { id } = req.params;
         const { student_id, plan_id, start_date } = req.body;
 
